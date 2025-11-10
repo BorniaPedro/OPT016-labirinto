@@ -6,7 +6,8 @@
 ## Requisitos de aprendizagem:
 - Condicionais e Repetições dentro do contexto de Lógica de programação
 
-## Ensino de Lógica de Programação com um Jogo de Labirinto”
-![Mapa_conceitual](https://github.com/user-attachments/assets/f92891e9-62b4-4809-91ce-0eedf073fe55)
+## Ensino de Lógica de Programação com um Jogo de Labirinto
+![Mapa_conceitual](https://github.com/user-attachments/assets/6bcd05d4-65aa-430f-a00d-c782cac28ee4)
+
 
 ## Modelo Instrucional
