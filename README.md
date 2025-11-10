@@ -7,7 +7,8 @@
 - Condicionais e Repetições dentro do contexto de Lógica de programação
 
 ## Ensino de Lógica de Programação com um Jogo de Labirinto
-![Mapa_conceitual](https://github.com/user-attachments/assets/6bcd05d4-65aa-430f-a00d-c782cac28ee4)
+![Mapa_conceitual](https://github.com/user-attachments/assets/9cdca8b8-1db7-4a4d-8f44-dc1dde3a5a58)
+
 
 
 ## Modelo Instrucional
