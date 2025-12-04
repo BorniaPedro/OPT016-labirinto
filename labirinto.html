@@ -45,15 +45,10 @@
         #levelButtons {
             display: flex;
             gap: 8px;
-            /* Espaço entre botões */
             justify-content: center;
-            /* Centraliza os botões */
             flex-grow: 1;
-            /* Ocupa todo o espaço disponível no meio */
             margin: 0 20px;
-            /* Margem para não colar no título/contador */
             flex-wrap: wrap;
-            /* Se tiver muitos, quebra linha (sem scroll) */
         }
 
         .level-btn {
@@ -65,14 +60,12 @@
             border: 1px solid #ddd;
             background-color: #f0f2f5;
             border-radius: 50%;
-            /* Deixa redondinho */
             cursor: pointer;
             font-weight: bold;
             color: #555;
             transition: all 0.2s;
             font-size: 14px;
             padding: 0;
-            /* Remove padding interno para centralizar texto */
         }
 
         .level-btn:hover {
@@ -91,7 +84,7 @@
         #blockCounter {
             font-weight: bold;
             color: #555;
-            font-size: 14px;
+            font-size: 17px;
             min-width: 80px;
             text-align: right;
         }
@@ -104,28 +97,63 @@
         #container {
             position: absolute;
             top: 80px;
-            bottom: 70px;
+            bottom: 20px;
             left: 2.5%;
             right: 2.5%;
-            background: white;
+            background: #eef2f5;
             border-radius: 8px;
             overflow: hidden;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            display: block;
+            display: flex;
+            gap: 15px;
+        }
+
+        #leftPanel {
+            flex: 4;
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #rightPanel {
+            flex: 6;
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-header {
+            height: 40px;
+            background-color: #f0f4f8;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding-left: 20px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+            text-transform: uppercase;
+            flex-shrink: 0;
         }
 
         #gameArea {
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            width: 40%;
-            background-color: #f9f9f9;
-            border-right: 1px solid #ddd;
-            overflow: auto;
+            flex-grow: 1;
+            position: relative;
+            background-color: #fff;
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
         }
 
         #mapWrapper {
@@ -135,25 +163,23 @@
         }
 
         #blocklyDiv {
-            position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            width: 60%;
+            width: 100%;
+            flex-grow: 1;
             background-color: #fff;
+            position: relative;
+
         }
 
         /* CONTROLS */
         #controls {
-            position: absolute;
-            bottom: 10px;
-            left: 0;
-            width: 100%;
+            height: 60px;
             display: flex;
             justify-content: center;
-            gap: 15px;
-            height: 50px;
-            z-index: 100;
+            align-items: center;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            flex-shrink: 0;
+            gap: 10px;
         }
 
         button {
@@ -181,37 +207,44 @@
             color: white;
         }
 
-        /* GAME ASSETS */
+        #btnRun, #btnReset {
+            position: static; 
+            width: 200px;
+        }
+
+        /* GAME ASSETS - SpriteSheet */
         .cell {
             position: absolute;
             width: 50px;
             height: 50px;
-            border: 1px solid #eee;
+            border: none;
             box-sizing: border-box;
+
+            background-size: cover; 
+            background-repeat: no-repeat;
+            image-rendering: pixelated;
         }
 
-        .wall {
-            background-color: #546E7A;
-        }
+        .path { background-image: url('./Sprites/path.png'); }
+        .wall { background-image: url('./Sprites/wall.png'); }
+        .trap { background-image: url('./Sprites/trap.png'); }
+        .outer { background-image: url('./Sprites/outer.png'); }
+        .start { background-image: url('./Sprites/start.png'); }
 
-        .path {
-            background-color: #fff;
-        }
-
-        .goal {
-            background-color: #66BB6A;
+        .goal { 
+            background-image: url('./Sprites/end.png'); 
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            color: white;
+            font-size: 0;
+            color: transparent;
         }
 
         #player {
             position: absolute;
             width: 40px;
             height: 40px;
-            background-color: #FF7043;
+            background-color: #eeff00;
             border-radius: 8px;
             transition: all 0.2s linear;
             z-index: 10;
@@ -307,6 +340,12 @@
             }
         }
 
+        @keyframes gentle-shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(3deg); }
+            75% { transform: rotate(-3deg); }
+        }
+
         .shake-error {
             animation: shake 0.4s ease-in-out;
             background-color: #d32f2f !important;
@@ -320,17 +359,13 @@
             transform: scale(1.1);
         }
 
-        .trap {
-            background-color: #FFEB3B;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
+        .shake-constant {
+            animation: gentle-shake 0.3s infinite ease-in-out !important;
         }
 
         #btnHint {
             position: absolute;
-            top: 15px;
+            top: 50px;
             left: 15px;
             width: 40px;
             height: 40px;
@@ -355,6 +390,29 @@
             transform: scale(1.1);
             border-color: #2196F3;
         }
+
+        #btnNewBlock {
+            position: absolute;
+            top: 50px;
+            right: 15px;
+            padding: 8px 15px;
+            border-radius: 20px;
+            background: #fffb1d;
+            border: 2px solid #d6d316;
+            color: black;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+            display: none;
+        }
+
+        #btnNewBlock:hover {
+            transform: scale(1.1);
+            background: #f7f30e;
+        }
     </style>
 </head>
 
@@ -377,16 +435,25 @@
     </header>
 
     <div id="container">
-        <button id="btnHint" onclick="openHint()">?</button>
-        <div id="gameArea">
-            <div id="player"></div>
+        <div id="leftPanel">
+            <div class="panel-header">Labirinto</div>
+            
+            <button id="btnHint" onclick="openHint()">?</button>
+            <button id="btnNewBlock" onclick="openNewBlockInfo()">Bloco Novo!</button>
+            
+            <div id="gameArea"></div>
         </div>
-        <div id="blocklyDiv"></div>
-    </div>
 
-    <div id="controls">
-        <button id="btnRun" onclick="runCode()">▶ Executar</button>
-        <button id="btnReset" onclick="resetLevel()" style="display: none;">↻ Reiniciar</button>
+        <div id="rightPanel">
+            <div class="panel-header">Área de Montagem</div>
+            
+            <div id="blocklyDiv"></div>
+
+            <div id="controls">
+                <button id="btnRun" onclick="runCode()">▶ Executar</button>
+                <button id="btnReset" onclick="resetLevel()" style="display: none;">↻ Reiniciar</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -405,7 +472,11 @@
                     [1, 1, 1, 1, 1, 1]],
                 startPos: { x: 1, y: 3 }, startDir: 1,
                 blocks: ["move_forward", "turn_left", "turn_right"], maxBlocks: 6,
-                tutorial: { title: "Nível 1", text: "Bem-vindo ao labirinto! Use os blocos <b>Avançar</b>, <b>Virar à Esquerda</b> e <b>Virar à Direita</b> para chegar à estrela." }
+                tutorial: { title: "Nível 1", text: "Bem-vindo ao labirinto! Use os blocos <b>Avançar</b>, <b>Virar Esquerda</b> e <b>Virar Direita</b> para chegar ate o fim (🟩)." },
+                newBlock: {
+                    title: "Bem Vindo!",
+                    text: "Para mover o personagem pelo labirinto, arraste os blocos de comando <b>Avançar</b>, <b>Virar Esquerda</b> e <b>Virar Direita</b> para a Área de Montagem, e monte um código que leve o personagem até o objetivo (🟩). Boa sorte!"
+                }
             },
             {
                 name: "2",
@@ -416,7 +487,7 @@
                 ],
                 startPos: { x: 1, y: 1 }, startDir: 1,
                 blocks: ["move_forward", "turn_left", "turn_right"], maxBlocks: 5,
-                tutorial: { title: "Nível 2", text: "Ótimo trabalho! O próximo parece até mais fácil." }
+                tutorial: { title: "Nível 2", text: "Esse parece até mais facil do que o primeiro." }
             },
             {
                 name: "3",
@@ -427,24 +498,47 @@
                 ],
                 startPos: { x: 1, y: 1 }, startDir: 1,
                 blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal"], maxBlocks: 2,
-                tutorial: { title: "Nível 3", text: "Bom trabalho! Mas você pode fazer melhor usando o bloco de repetição." }
+                tutorial: { title: "Nível 3", text: "Esse é parecido com o último, mas você pode usar o bloco <b>Repetir até chegar em 🟩</b> para facilitar." },
+                newBlock: {
+                    title: "Bloco Repetir",
+                    text: "O bloco <b>Repetir até chegar em 🟩</b> permite que você crie uma repetição que executa os comandos dentro dele até que o personagem alcance o objetivo (🟩)."
+                }
             },
             {
                 name: "4",
+                // O Escadão: Exige um loop de movimento e virada
                 map: [
-                    [1, 1, 1, 1, 1, 1],
-                    [1, 2, 0, 0, 0, 1],
-                    [1, 1, 1, 1, 0, 1],
-                    [1, 1, 1, 1, 0, 1],
-                    [1, 3, 0, 0, 0, 1],
-                    [1, 1, 1, 1, 1, 1]
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 3, 1],
+                    [1, 1, 1, 1, 0, 0, 1],
+                    [1, 1, 1, 0, 0, 1, 1],
+                    [1, 1, 0, 0, 1, 1, 1],
+                    [1, 2, 0, 1, 1, 1, 1],
+                    [1, 1, 1, 1, 1, 1, 1]
                 ],
-                startPos: { x: 1, y: 1 }, startDir: 1,
-                blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal", "if_path"], maxBlocks: 4,
-                tutorial: { title: "Nível 4", text: "Agora as coisas estão ficando interessantes! Use o bloco <b>Se caminho</b> para decidir a direção correta." }
+                startPos: { x: 1, y: 5 }, startDir: 1,
+                blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal"], maxBlocks: 5,
+                tutorial: { title: "Nível 4", text: "Uma escada! Você consegue criar um padrão de movimentos que se repete para subir?" }
             },
             {
                 name: "5",
+                map: [
+                    [1, 1, 1, 1, 1, 1, 1],
+                    [1, 2, 0, 0, 1, 1, 1],
+                    [1, 1, 1, 0, 1, 1, 1],
+                    [1, 1, 1, 0, 0, 3, 1],
+                    [1, 1, 1, 1, 1, 1, 1],
+                ],
+                startPos: { x: 1, y: 1 }, startDir: 1,
+                blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal", "if_path"], maxBlocks: 6,
+                tutorial: { title: "Nível 5", text: "Agora as coisas estão ficando interessantes! Use o bloco <b>Se existe caminho à</b> para se mover na direção correta." },
+                newBlock: {
+                    title: "Bloco Condicional",
+                    text: "O bloco <b>Se existe caminho à</b> permite que você verifique se existe um caminho livre em uma direção específica (frente, esquerda ou direita). Se o caminho existir, os comandos dentro do bloco serão executados."
+                }
+            },
+            {
+                name: "6",
                 map: [
                     [1, 1, 1, 1, 1, 1, 1, 1],
                     [1, 3, 0, 0, 0, 1, 1, 1],
@@ -456,24 +550,11 @@
                 ],
                 startPos: { x: 1, y: 5 }, startDir: 1,
                 blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal", "if_path", "if_else_path"], maxBlocks: 5,
-                tutorial: { title: "Nível 5", text: "Cuidado com as armadilhas amarelas. Use o bloco <b>Se caminho... senão</b> para tomar a decisão correta." }
-
-            },
-            {
-                name: "6",
-                // O Escadão: Exige um loop de movimento e virada
-                map: [
-                    [1, 1, 1, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1, 3, 1],
-                    [1, 1, 1, 1, 0, 0, 1],
-                    [1, 1, 1, 0, 0, 1, 1],
-                    [1, 1, 0, 0, 1, 1, 1],
-                    [1, 2, 0, 1, 1, 1, 1],
-                    [1, 1, 1, 1, 1, 1, 1]
-                ],
-                startPos: { x: 1, y: 5 }, startDir: 1, // Começa olhando para direita
-                blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal"], maxBlocks: 5,
-                tutorial: { title: "Nível 6 (Extra)", text: "Uma escada! Você consegue criar um padrão de movimentos que se repete para subir?" }
+                tutorial: { title: "Nível 6", text: "Cuidado com as armadilhas. A lógica é parecida com o ultimo, mas você pode facilitar o trabalho usando o bloco <b>Se existe caminho à ... Se não.</b>" },
+                newBlock: {
+                    title: "Bloco Condicional com Se não",
+                    text: "O bloco <b>Se existe caminho à ... Se não</b> permite que você verifique se existe um caminho livre em uma direção específica (frente, esquerda ou direita). Se o caminho existir, os comandos dentro do primeiro bloco serão executados; caso não exista caminho, os comandos dentro do bloco 'Se não' serão executados."
+                }
             },
             {
                 name: "7",
@@ -487,9 +568,9 @@
                     [1, 2, 1, 1, 1, 1, 1, 1],
                     [1, 1, 1, 1, 1, 1, 1, 1]
                 ],
-                startPos: { x: 1, y: 5 }, startDir: 0, // Começa olhando para CIMA
-                blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal", "if_else_path"], maxBlocks: 5,
-                tutorial: { title: "Nível 7 (Extra)", text: "Labirinto complexo. Tente a regra da 'mão direita': Se houver caminho à direita, vire. Senão, avance." }
+                startPos: { x: 1, y: 5 }, startDir: 0,
+                blocks: ["move_forward", "turn_left", "turn_right", "repeat_until_goal", "if_else_path"], maxBlocks: 6,
+                tutorial: { title: "Nível 7", text: "Labirinto complexo. Sera que um bloco de condição é o suficiente?" }
             }
 
         ];
@@ -502,21 +583,21 @@
         // Blockly Defs
         Blockly.defineBlocksWithJsonArray([
             { "type": "move_forward", "message0": "Avançar ⬆", "previousStatement": null, "nextStatement": null, "colour": 160, },
-            { "type": "turn_left", "message0": "Virar Esquerda ↺", "previousStatement": null, "nextStatement": null, "colour": 160 },
-            { "type": "turn_right", "message0": "Virar Direita ↻", "previousStatement": null, "nextStatement": null, "colour": 160 },
-            { "type": "repeat_until_goal", "message0": "Repetir até chegar em ★ %1 %2", "args0": [{ "type": "input_dummy" }, { "type": "input_statement", "name": "DO" }], "previousStatement": null, "nextStatement": null, "colour": 290 },
+            { "type": "turn_left", "message0": "Virar Esquerda ⬅", "previousStatement": null, "nextStatement": null, "colour": 160 },
+            { "type": "turn_right", "message0": "Virar Direita ⮕", "previousStatement": null, "nextStatement": null, "colour": 160 },
+            { "type": "repeat_until_goal", "message0": "Repetir até chegar em 🟩 %1 %2", "args0": [{ "type": "input_dummy" }, { "type": "input_statement", "name": "DO" }], "previousStatement": null, "nextStatement": null, "colour": 290 },
 
             {
                 "type": "if_path",
-                "message0": "Se caminho à %1 %2 %3",
+                "message0": "Se existe caminho à %1 %2 %3",
                 "args0": [
                     {
                         "type": "field_dropdown",
                         "name": "DIR",
                         "options": [
                             ["frente ⬆", "ahead"],
-                            ["esquerda ↺", "left"],
-                            ["direita ↻", "right"]
+                            ["esquerda ⬅", "left"],
+                            ["direita ⮕", "right"]
                         ]
                     },
                     { "type": "input_dummy" },
@@ -526,15 +607,15 @@
             },
             {
                 "type": "if_else_path",
-                "message0": "Se caminho à %1 %2 %3 senão %4",
+                "message0": "Se existe caminho à %1 %2 %3 se não %4",
                 "args0": [
                     {
                         "type": "field_dropdown",
                         "name": "DIR",
                         "options": [
                             ["frente ⬆", "ahead"],
-                            ["esquerda ↺", "left"],
-                            ["direita ↻", "right"]
+                            ["esquerda ⬅", "left"],
+                            ["direita ⮕", "right"]
                         ]
                     },
                     { "type": "input_dummy" },
@@ -583,7 +664,6 @@
 
         // Resize handler
         function onResize() {
-            var element = document.getElementById('blocklyDiv');
             Blockly.svgResize(workspace);
         }
         window.addEventListener('resize', onResize, false);
@@ -624,6 +704,24 @@
             tutBtn.onclick = closeTutorial;
 
             const level = levels[index];
+            const btnNewBlock = document.getElementById('btnNewBlock');
+
+            if (level.newBlock) {
+                if (index === 0) {
+                    btnNewBlock.style.display = 'none'; 
+                    btnNewBlock.classList.remove('shake-constant');
+                    setTimeout(() => {
+                        openNewBlockInfo();
+                    }, 500);
+                } else {
+                    btnNewBlock.style.display = 'block';
+                    btnNewBlock.classList.add('shake-constant');
+                }
+            } else {
+                btnNewBlock.style.display = 'none';
+                btnNewBlock.classList.remove('shake-constant');
+            }
+
             map = level.map;
             playerPos = { ...level.startPos }; playerDir = level.startDir;
             workspace.options.maxBlocks = level.maxBlocks;
@@ -659,7 +757,8 @@
 
         const gameArea = document.getElementById('gameArea');
         function drawMap() {
-            gameArea.innerHTML = '';
+            gameArea.innerHTML = ''; // Limpa só o mapa
+            
             const mapHeightPx = map.length * TILE_SIZE;
             const mapWidthPx = map[0].length * TILE_SIZE;
 
@@ -669,33 +768,32 @@
             mapWrapper.style.height = mapHeightPx + 'px';
             mapWrapper.style.position = 'relative';
 
+            // Cria o Player
             const playerDiv = document.createElement('div');
             playerDiv.id = 'player';
             mapWrapper.appendChild(playerDiv);
 
+            // Cria os Tiles
             for (let y = 0; y < map.length; y++) {
                 for (let x = 0; x < map[y].length; x++) {
                     let cell = document.createElement('div');
                     let type = map[y][x];
 
-                    let classType = 'path';
+                    let classType = 'path'; 
                     if (type === 1) classType = 'wall';
-                    if (type === 3) classType = 'goal';
-                    if (type === 4) classType = 'trap';
+                    else if (type === 2) classType = 'start';
+                    else if (type === 3) classType = 'goal';
+                    else if (type === 4) classType = 'trap';
+                    else if (type === 5) classType = 'outer';
 
                     cell.className = 'cell ' + classType;
-
-                    if (type === 3) cell.innerHTML = '★';
-
                     cell.style.top = (y * TILE_SIZE) + 'px';
                     cell.style.left = (x * TILE_SIZE) + 'px';
-
                     mapWrapper.appendChild(cell);
                 }
             }
 
             gameArea.appendChild(mapWrapper);
-
             updatePlayerVisual(playerDiv, playerPos.x, playerPos.y, playerDir);
         }
 
@@ -762,6 +860,9 @@
 
         function runCode() {
             if (isRunning) return;
+
+            stopNewBlockShake();
+
             if (workspace.getAllBlocks(false).length > workspace.options.maxBlocks) {
                 alert(`Limite de blocos excedido!`); return;
             }
@@ -836,7 +937,7 @@
 
         function showVictoryScreen() {
             document.getElementById('tutorialTitle').innerText = "Parabéns!";
-            document.getElementById('tutorialText').innerHTML = "<b>Você zerou o Labirinto!</b><br><br>Você dominou todos os algoritmos.";
+            document.getElementById('tutorialText').innerHTML = "<b>Você terminou o jogo!</b><br><br>Você dominou todos os algoritmos.";
 
             const btn = document.querySelector('.tutorial-box button');
             btn.innerText = "Voltar ao Início";
@@ -853,11 +954,32 @@
             tutBtn.innerText = 'Entendi';
             tutBtn.onclick = closeTutorial;
 
-            // Pega os dados do nível atual
             const tutorialData = levels[currentLevelIndex].tutorial;
 
             if (tutorialData) {
                 showTutorial(tutorialData);
+            }
+        }
+
+        function openNewBlockInfo() {
+            stopNewBlockShake();
+            const level = levels[currentLevelIndex];
+            if (level.newBlock) {
+                document.getElementById('tutorialTitle').innerText = level.newBlock.title;
+                document.getElementById('tutorialText').innerHTML = level.newBlock.text;
+                
+                const tutBtn = document.querySelector('.tutorial-box button');
+                tutBtn.innerText = 'Entendi';
+                tutBtn.onclick = closeTutorial;
+                
+                document.getElementById('tutorialOverlay').style.display = 'flex';
+            }
+        }
+
+        function stopNewBlockShake() {
+            const btn = document.getElementById('btnNewBlock');
+            if (btn) {
+                btn.classList.remove('shake-constant');
             }
         }
 
